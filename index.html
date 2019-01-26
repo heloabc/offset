@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="manifest" href="/manifest.json">
   <style>
     #result {
       font-size: 50vh;
@@ -15,24 +17,30 @@
   </style>
   <title>hello</title>
 </head>
+
 <body>
   <div id="result">
   </div>
   <script>
-    const DaySeconds = 60 * 60 * 24 * 1000;
-    const searchs = window.location.search.slice(1)
-    .split('&')
-    .reduce(function(result, s) {
-      const [key, v] = s.split('=');
-      result[key] = v;
-      return result
-    }, {});
-    const time = new Date().getTime();
+    function updateText() {
+      const DaySeconds = 60 * 60 * 24 * 1000;
+      const searchs = window.location.search.slice(1)
+        .split('&')
+        .reduce(function (result, s) {
+          const [key, v] = s.split('=');
+          result[key] = v;
+          return result
+        }, {});
+      const time = new Date().getTime();
 
-    const daysince = Math.ceil(time / DaySeconds) + (+searchs.offset || 0);
+      const daysince = Math.ceil(time / DaySeconds) + (+searchs.offset || 0);
 
-    const result = daysince % 10 + 1;
-    document.getElementById('result').innerText = result;
+      const result = daysince % 10 + 1;
+      document.getElementById('result').innerText = result;
+    }
+    updateText();
+    setTimeout(updateText, 1000);
   </script>
 </body>
+
 </html>
