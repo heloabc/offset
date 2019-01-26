@@ -24,6 +24,7 @@
   <script>
     function updateText() {
       const DaySeconds = 60 * 60 * 24 * 1000;
+      const OffsetSeconds = 60 * 1000 * new Date().getTimezoneOffset();
       const searchs = window.location.search.slice(1)
         .split('&')
         .reduce(function (result, s) {
@@ -31,7 +32,7 @@
           result[key] = v;
           return result
         }, {});
-      const time = new Date().getTime();
+      const time = new Date().getTime() - OffsetSeconds;
 
       const daysince = Math.ceil(time / DaySeconds) + (+searchs.offset || 0);
 
