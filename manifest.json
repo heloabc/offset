@@ -1,6 +1,6 @@
 {
-  "short_name": "pills",
-  "name": "pills day counter",
+  "short_name": "day",
+  "name": "day counter",
   "background_color": "white",
   "theme_color": "white",
   "display": "standalone"

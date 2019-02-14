@@ -23,16 +23,55 @@
   </div>
   <script>
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function() {
-        navigator.serviceWorker.register('./sw.js').then(function(registration) {
-          // Registration was successful
-          console.log('ServiceWorker registration successful with scope: ', registration.scope);
-        }, function(err) {
-          // registration failed :(
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('./sw.js').then(function (reg) {
+          console.log('ServiceWorker registration successful with scope: ', reg);
+          window.reg = reg;
+          initSubscirbe(reg);
+        }, function (err) {
           console.log('ServiceWorker registration failed: ', err);
         });
       });
     }
+
+    function initSubscirbe(reg) {
+      reg.pushManager.getSubscription()
+        .then(function (subscription) {
+          if (subscription !== null) {
+            console.log('already subscribe', JSON.stringify(subscription));
+          } else {
+            console.log('will subscribe');
+            subscribe(reg);
+          }
+        });
+    }
+    function urlB64ToUint8Array(base64String) {
+      const padding = '='.repeat((4 - base64String.length % 4) % 4);
+      const base64 = (base64String + padding)
+        .replace(/\-/g, '+')
+        .replace(/_/g, '/');
+
+      const rawData = window.atob(base64);
+      const outputArray = new Uint8Array(rawData.length);
+
+      for (let i = 0; i < rawData.length; ++i) {
+        outputArray[i] = rawData.charCodeAt(i);
+      }
+      return outputArray;
+    }
+
+    function subscribe(reg) {
+      const applicationServerKey = urlB64ToUint8Array('BIXO626ttwQuaDj9XXDsNRrxupUAjcgMUBtvYgG4I1nSoRApXtHo2EYXNaSItVKyXBt2opD5URXgnRQow5ol_H8');
+      reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey
+      }).then(function(xx) {
+        console.log('hello', xx)
+      }).catch(function(err) {
+        console.log('fail', err)
+      });
+    }
+
     function updateText() {
       const DaySeconds = 60 * 60 * 24 * 1000;
       const OffsetSeconds = 60 * 1000 * new Date().getTimezoneOffset();

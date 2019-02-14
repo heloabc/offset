@@ -8,24 +8,37 @@ var urlsToCache = [
 ];
 
 self.addEventListener('install', function(event) {
-  // Perform install steps
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(function(cache) {
-        console.log('Opened cache');
         return cache.addAll(urlsToCache);
       })
   );
 });
 
+self.addEventListener('push', function(event) {
+  const msg = event.data.text();
+  const title = 'Push Codelab';
+  const options = {
+    body: msg,
+    icon: 'images/icon.png',
+    badge: 'images/badge.png'
+  };
+  self.registration.showNotification(title, options);
+})
+
 self.addEventListener('fetch', function(event) {
   event.respondWith(
     caches.match(event.request)
       .then(function(response) {
-        console.log(event.request)
-        // Cache hit - return response
         if (response) {
           return response;
+        }
+        if (event && event.request && event.request.url) {
+          caches.open(CACHE_NAME)
+          .then(function(cache) {
+            cache.add(event.request);
+          })
         }
         return fetch(event.request);
       }
